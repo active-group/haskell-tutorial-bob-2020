@@ -2,15 +2,19 @@
 This repository contains haskell code and technical instructions.
 
 ### instructions
-- install Visual Studio Code
 
-- install cabal
-
-- switch to folder 'base-image' und execute './build.sh' (ghcide will be installed)
-
-- open Visual Studio Code and install extensions 'remote' und 'ghcide'
-
-- with 'Strg + Shift + P' you get a list of commands, choose 'Remote Containers: Open Folder in Container', then choose 'haskell-ide-docker' -> 'vscode-folder'
+- install [Visual Studio Code](https://code.visualstudio.com/download)
+- install the "ghcide" extension: click on the
+  "Extensions" icon on the left, search for "ghcide", select
+  "ghcide", click on install
+- install the "Remote - Containers" extension: click on the
+  "Extensions" icon on the left, search for "Containers", select
+  "Remote - Containers", click  on install
+- click on the files icon in the upper-left corner
+- click on the "View" item, select "Command Palette", type
+  "containers", select "Remote - Containers: Open Folder in Container"
+- select this directory and press OK
+- this triggers building a Docker image; wait until it finishes
 
 ### file explanation
 'MachMit' is a prepared empty file for writing code in the tutorial. In 'Spickzettel' you can look up code snippets.
