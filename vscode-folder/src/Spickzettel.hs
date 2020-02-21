@@ -16,6 +16,18 @@ z = 3
 double :: Int -> Int
 double x = x * 2
 
+-- Zwei Zahlen addieren
+add :: Int -> Int -> Int
+add x y = x + y
+
+-- curried function
+-- add' :: Int -> (Int -> Int)
+-- (add' x) y = x + y
+
+-- Beispiel:
+add' :: Int -> (Int -> Int)
+(add' 1) y = 1 + y
+
 -- Ein Aggregatzustand ist eins der folgenden:
 -- - gasförmig
 -- - flüssig
@@ -25,18 +37,6 @@ data State = Gas | Liquid | Solid
 
 -- Agreggatzustand von Wasser
 computeState :: Float -> State
-{-
-computestate t =
-  if t < 0
-  then Solid
-  else
-    if (t >= 0) && (t <= 100)
-    then Liquid
-    else
-      if t > 100
-      then Gas
-      else undefined
--}
 computeState t
     | t < 0 = Solid
     | (t >= 0) && (t <= 100) = Liquid
@@ -49,7 +49,6 @@ typicalTemp Gas = 150
 typicalTemp Liquid = 20
 typicalTemp Solid = -20
 
--- Hatten oben: Datendefinition mit mehreren Wertkonstruktoren; hier: Datendefinition mit mehrerern parametrisierten Wertkonstruktoren
 -- Eine Form ist eins der folgenden:
 -- - Kreis
 -- - Rechteck
@@ -70,10 +69,9 @@ area (Rect x y) = x * y
 -- pattern matching
 circumference :: Shape -> Float
 circumference (Circle r) = 2 * pi * r
-circumference (Rect x y ) = 2 * x + 2 * y
+circumference (Rect x y) = 2 * x + 2 * y
 
--- Weitere Beispiele zu Datendefinitionen
--- Zusammengesetzte Daten (Datendefinition mit einem parametrisierten Wertkonstruktor)
+-- Zusammengesetzte Daten
 -- Ein Gürteltier hat die folgenden Eigenschaften:
 -- - Lebendigkeit
 -- - Gewicht
@@ -88,7 +86,7 @@ data Liveness = Dead | Alive
  deriving (Show, Eq)
 
 -- Beispiele
-dillo1 = Dillo Alive 10 -- lebt noch, 10kg
+
 dillo2 = Dillo Dead 12 -- totes Gürteltier, 12kg
 
 -- Lebt der Dillo?
@@ -97,42 +95,47 @@ dillo2 = Dillo Dead 12 -- totes Gürteltier, 12kg
 --liveness (Dillo Alive _) = Alive
 --liveness (Dillo Dead _) = Dead
 
+-- Beispiele
+--res1 = liveness dillo1 -- Alive
+--res2 = liveness dillo2 -- Dead
+
 -- Gewicht des Dillos?
 -- pattern matching
 --weight :: Dillo -> Int
 --weight (Dillo _ w) = w
 
--- Besser: Record Syntax - liefert parametrisierte Wertkonstruktoren (Selektoren) schon mit
--- weitere Vorteile: Felder müssen nicht in Reihenfolge spezifiziert werden und wenn mehrere Felder mit gleichem Typ existieren,
--- kann man sie voneinander unterscheiden
+-- Beispiel
+--res3 = weight dillo1 -- 10
+ 
+-- Besser: Record Syntax
 --data Dillo = Dillo {dilloLiveness :: Liveness,
 --                    dilloWeight :: Int}
 --deriving (Show, Eq)
 
+-- Beispiele
+--res4 = dilloLiveness dillo1 -- Alive
+--res5 = dilloLiveness dillo2 -- Dead
+--res6 = dilloWeight dillo1 -- 10
+
 -- Gürteltier füttern
 --feedDillo :: Int -> Dillo -> Dillo
 --feedDillo amount (Dillo Alive weight) = Dillo Alive (weight + amount)
---feedDillo (Dillo Dead weight) = Dillo Dead weight
---feedDillo amount dillo@(Dillo Dead weight) = dillo -- Alias-Pattern
+--feedDillo amount (Dillo Dead weight) = Dillo Dead weight
 
 -- Beispiele
 --dillo3 = feedDillo 1 dillo1
 --dillo4 = feedDillo 1 dillo2
 
 -- Gürteltier überfahren
+-- pattern matching
 --runOverDillo :: Dillo -> Dillo
---runOverDillo dillo =
---   Dillo { dilloLiveness = Dead, dilloWeight = dilloWeight dillo }
---runOverDillo (Dillo _ weight) =
---    Dillo Dead weight
---runOverDillo dillo = dillo { dilloLiveness = Dead }
+--runOverDillo (Dillo _ weight) = Dillo Dead weight
 
 -- Beispiele
 --dillo5 = runOverDillo dillo3
 --dillo6 = runOverDillo dillo2
 
--- Ein letztes Beispiel zu Datendefinitionen
--- Algebraischer Datentyp: Gemischte Daten von zusammengesetzten Daten (Datendefintion mit mehreren parametriesierten Wertkonstruktoren)
+-- Algebraischer Datentyp: Gemischte Daten von zusammengesetzten Daten
 -- Ein Tier ist entweder ein Dillo oder ein Papagei:
 
 data Animal = Dillo { dilloLiveness :: Liveness,
@@ -140,6 +143,11 @@ data Animal = Dillo { dilloLiveness :: Liveness,
             | Parrot { parrotSentence :: String,
                        parrotWeight :: Int }
  deriving Show
+
+-- Beispiele
+dillo7 = Dillo Alive 10
+dillo8 = Dillo Dead 12
+parrot1 = Parrot "Der Schatz ist am Silbersee" 5
 
 -- Tiere füttern
 feedAnimal :: Int -> Animal -> Animal
@@ -149,6 +157,11 @@ feedAnimal amount (Dillo Dead weight) =
     Dillo Dead weight
 feedAnimal amount (Parrot sentence weight) =
     Parrot sentence (weight + amount)
+
+-- Beispiele
+dillo9 = feedAnimal 1 dillo7
+dillo10 = feedAnimal 2 dillo8
+parrot2 = feedAnimal 1 parrot1
 
 -- Listen ([] ist ein parametrisierter Typkonstruktor):
 
@@ -160,7 +173,7 @@ list2 :: [Int]
 list2 = [5, 7] -- 2elementige Liste: 5, 7
 
 list3 :: [Int]
-list3 = 12:list2 -- 3elementige Liste: 12 5 7, : fügt ein Element vorne an die liste an
+list3 = 12:list2 -- 3elementige Liste: 12 5 7, : fügt ein Element vorne an die Liste an
 
 list4 :: [Bool]
 list4 = [False, True, False] -- 3elementige Liste: False, True, False
@@ -196,6 +209,16 @@ tuple1 = splitListAt 3 [1, 2, 3, 4, 5] -- ([1, 2, 3], [4, 5])
 -- Eingebaut:
 -- tuple1 = splitAt 3 [1, 2, 3, 4, 5] -- ([1, 2, 3], [4, 5])
 
+-- Rekursion:
+-- Natürliche Zahlen ab n:
+natsFrom :: Integer -> [Integer]
+natsFrom n = n : natsFrom (n + 1)
+
+-- Natürliche Zahlen ab 0:
+nats = natsFrom 0
+-- Zwischenschritte:
+-- natsfrom 0 = 0 : (1 : (2 : (3 : [...])))
+
 -- Rekursion auf Listen:
 -- Addiere Einträge in einer Liste auf
 listSum :: [Int] -> Int
@@ -217,15 +240,6 @@ listSum (first:rest) = first + (listSum rest)
 -- 1 + 2 + 3 + 4 + 5 listSum []
 --                                                {apply listSum}
 -- 1 + 2 + 3 + 4 + 5 + 0
-
--- Natürliche Zahlen ab n:
-natsFrom :: Integer -> [Integer]
-natsFrom n = n : natsFrom (n + 1)
-
--- Natürliche Zahlen ab 0:
-nats = natsFrom 0
--- Zwischenschritte:
--- natsfrom 0 = 0 : (1 : (2 : (3 : [...])))
 
 -- Vielfache von n aus einer Liste entfernen:
 strikeMultiples :: Integer -> [Integer] -> [Integer]
@@ -372,6 +386,21 @@ list17 = evens "abcde" --"ace"
 -- "ace"
 
 -- Funktionen höherer Ordnung:
+composition :: (b -> c) -> (a -> b) -> (a -> c)
+composition f g = \x -> f (g x)
+
+-- Beispiel:
+i :: Int -> Int
+i a = 2 * a
+
+j :: Int -> Int
+j a = 3 * a
+
+fkt1 = composition j i
+
+x6 = fkt1 1 -- 6
+
+-- Funktionen höherer Ordnung auf Listen:
 -- map:
 listMap :: (a -> b) -> [a] -> [b]
 listMap f [] = []
@@ -446,7 +475,7 @@ listFoldr f v (x:xs) = f x (listFoldr f v xs)
 sum' :: [Int] -> Int
 sum' xs = listFoldr (+) 0 xs
 
-x6 = sum' [1, 2, 3, 4, 5] -- 15
+x7 = sum' [1, 2, 3, 4, 5] -- 15
 -- Zwischenschritte:
 -- sum' [1, 2, 3, 4, 5]
 --                                                   {apply sum'}
@@ -504,9 +533,9 @@ g a = 3 * a
 h :: Int -> Int
 h a = 4 * a
 
-fkt1 :: Int -> Int
-fkt1 = compose [f, g, h] -- f . g . h
-x7 = fkt1 1 -- 24
+fkt2 :: Int -> Int
+fkt2 = compose [f, g, h] -- f . g . h
+x8 = fkt2 1 -- 24
 -- Zwischenschritte:
 -- compose [f, g, h]
 --                                                    {apply compose}
@@ -532,7 +561,7 @@ listFoldl f v (x:xs) = listFoldl f (f x v) xs
 sum'' :: [Int] -> Int
 sum'' xs = listFoldl (+) 0 xs
 
-x8 = sum'' [1, 2, 3, 4, 5] -- 15
+x9 = sum'' [1, 2, 3, 4, 5] -- 15
 -- Zwischenschritte:
 -- sum'' [1, 2, 3, 4, 5]
 --                                                    {apply sum''}
@@ -555,9 +584,8 @@ x8 = sum'' [1, 2, 3, 4, 5] -- 15
 -- sum'' :: [Int] -> Int
 -- sum'' xs = foldl (+) 0 xs
 
--- Funktoren, Monoide, Halbgruppen
+-- Halbgruppen, Monoide, Funktoren, Foldables
 -- Map:
--- data declaration with parameterised type constructor
 data Map key value = Map [(key, value)]
  deriving Show
 
@@ -588,7 +616,6 @@ mapPut key value (Map list) = Map ((key, value) : list)
 map3 = mapPut "Erika" "Bor" map1 -- Map [("Erika","Bor"),("Mike","Sperber"),("Angela","Merkel")]
 
 -- Optional, manchmal da, manchmal nicht:
--- Data declaration with parameterized type constructor
 data Optional a =
     NotThere
   | There a
@@ -725,14 +752,34 @@ instance Monoid [a] where
 identity :: a -> a
 identity a = a
 
+-- Die Halbgruppe (a -> a) ist mit identity ein Monoid.
+instance Monoid ((->) a a) where
+    neutral = identity
+
+-- Die Halbgruppe Bool bzgl. && ist mit True ein Monoid
+instance Monoid Bool where
+    neutral = True
+
+-- Die Halbgruppe Bool bzgl. || ist mit False ein Monoid
+instance Monoid DisjunctiveBool where
+    neutral = Disjunctive False
+
+-- Ist a eine Halbgruppe (?), dann ist die Halbgruppe Optional a mit NotThere ein Monoid
+instance Semigroup a => Monoid (Optional a) where
+    neutral = NotThere
+
+-- Tupeln von Monoiden sind wieder Monoide
+--instance (Monoid a, Monoid b) => Monoid (a, b) where
+--    neutral = ??
+
 -- Funktor
 class Functor (constructor :: * -> *) where
     mmap :: (a -> b) -> constructor a -> constructor b
-    -- mmap identity collection = collection
-    -- oder: mmap identity = identity
-    -- mmap (f . g) collection = mmap f (mmap g collection)
-    -- oder: mmap (f . g) = (mmap f) . (mmap g)
-    -- (f . g) x = f (g x)
+    -- mmap identity = identity
+    -- mmap (f . g) = (mmap f) . (mmap g)
+
+-- f :: b -> c, g :: a -> b, f . g :: a -> c
+-- mmap g :: constructor a -> constructor b, mmap f :: constructor b -> constructor c, (mmap f . mmap g) :: constructor a -> constructor c
 
 instance Functor [] where
     mmap = map
@@ -747,12 +794,26 @@ instance Functor ((->) r) where
     mmap = (.)
 -- ((->) r) ist die Menge der Funktionen mit Domäne vom Typ r
 
+-- 2 + 3, ((+) 2 3) , a -> b, ((->) a b)
+
+-- mmap :: (a -> b) -> ((->) r a) -> ((->) r b) 
+
+-- f :: a -> b, g :: r -> a
+
+-- mmap f g = f . g
+
+-- Beweis:
+-- mmap id_a g = id_a . g = g = id_((->) a) g
+-- h :: b -> c
+-- mmap (h . f) g = (h . f) . g = h . (f . g) = mmap h (mmap f g) = (mmap h . mmap f) g
+
 -- Beispiel:
-fkt2 :: Int -> Int
-fkt2 = mmap (*3) (+100)
+fkt3 :: Int -> Int
+fkt3 = mmap (*3) (+100)
 
-x9 = fkt2 1 -- 303
+x10 = fkt3 1 -- 303
 
+-- Foldable
 class Foldable (constructor :: * -> *) where
     myfoldr :: (a -> b -> b) -> b -> constructor a -> b
 
