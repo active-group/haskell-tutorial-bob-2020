@@ -1,8 +1,9 @@
 # haskell-tutorial-bob-2020
-This repository contains haskell code and technical instructions.
+This repository contains Haskell code and technical instructions.
 
 ### instructions
 
+- install [Docker](https://www.docker.com/)
 - install [Visual Studio Code](https://code.visualstudio.com/download)
 - install the "ghcide" extension: click on the
   "Extensions" icon on the left, search for "ghcide", select
