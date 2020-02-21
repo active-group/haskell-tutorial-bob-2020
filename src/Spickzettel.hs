@@ -42,7 +42,7 @@ computeState t
     | (t >= 0) && (t <= 100) = Liquid
     | t > 100 = Gas
 
--- Typsiche Temperatur
+-- Typische Temperatur
 -- pattern matching
 typicalTemp :: State -> Float
 typicalTemp Gas = 150
@@ -55,7 +55,7 @@ typicalTemp Solid = -20
 data Shape = Circle Float | Rect Float Float
  deriving (Show, Eq)
 
--- Wir erstellen ein Quadtrat
+-- Wir erstellen ein Quadrat
 square :: Float -> Shape
 square n = Rect n n
 
@@ -78,7 +78,7 @@ circumference (Rect x y) = 2 * x + 2 * y
 --data Dillo = Dillo Liveness Int
 --deriving Show
 
--- Brauche Datendefinition für Lebendigkeit:
+-- Brauchen Datendefinition für Lebendigkeit:
 -- Lebendigkeit kann folgende Werte annehmen:
 -- - tot
 -- - lebendig
@@ -167,25 +167,25 @@ parrot2 = feedAnimal 1 parrot1
 
 -- Beispiele:
 list1 :: [Int]
-list1 = [5] -- 1elementige Liste: 5
+list1 = [5] -- 1-elementige Liste: 5
 
 list2 :: [Int]
-list2 = [5, 7] -- 2elementige Liste: 5, 7
+list2 = [5, 7] -- 2-elementige Liste: 5, 7
 
 list3 :: [Int]
-list3 = 12:list2 -- 3elementige Liste: 12 5 7, : fügt ein Element vorne an die Liste an
+list3 = 12:list2 -- 3-elementige Liste: 12 5 7, : fügt ein Element vorne an die Liste an
 
 list4 :: [Bool]
-list4 = [False, True, False] -- 3elementige Liste: False, True, False
+list4 = [False, True, False] -- 3-elementige Liste: False, True, False
 
 list5 :: [Char]
-list5 = ['a', 'b', 'c', 'd'] -- 4elementige Liste: a, b, c, d
+list5 = ['a', 'b', 'c', 'd'] -- 4-elementige Liste: a, b, c, d
 
 list6 :: [String]
-list6 = ["One", "Two", "Three"] -- 3elementige Liste: One, Two, Three
+list6 = ["One", "Two", "Three"] -- 3-elementige Liste: One, Two, Three
 
 list7 :: [[Char]]
-list7 = [['a', 'b'], ['c', 'd', 'e']] -- 2elementige Liste: ['a', 'b'], ['c', 'd', 'e']
+list7 = [['a', 'b'], ['c', 'd', 'e']] -- 2-elementige Liste: ['a', 'b'], ['c', 'd', 'e']
 
 -- Funktionen auf Listen:
 x1 = sum [1, 2, 3, 4, 5] -- 15, Addiere Einträge in einer Liste auf
@@ -194,7 +194,7 @@ list8 = tail [1, 2, 3, 4 ,5] -- [2, 3, 4 ,5], Liste ohne den ersten Eintrag
 x3 = [1, 2, 3, 4, 5] !! 2 -- 3, dritter Eintrag aus der Liste
 list9 = take 3 [1, 2, 3, 4, 5] -- [1, 2, 3], die ersten drei Einträge aus der Liste
 list10 = drop 3 [1, 2, 3, 4, 5] -- [4, 5], Liste ohne die ersten drei Einträge
-x4 = length [1, 2, 3, 4, 5] -- 5, Anzahl der einträge in einer Liste
+x4 = length [1, 2, 3, 4, 5] -- 5, Anzahl der Einträge in einer Liste
 x5 = product [1, 2, 3, 4, 5] -- 120, multipliziere Einträge in einer Liste auf
 list11 = [1, 2, 3] ++ [4, 5] -- [1, 2, 3, 4, 5], verbinde zwei Listen
 list12 = reverse [1, 2, 3, 4, 5] -- [5, 4, 3, 2, 1], drehe die Reihenfolge der Einträge in einer Liste um
@@ -722,7 +722,7 @@ instance Semigroup a => Semigroup (Optional a) where
     combine (There a1) NotThere = There a1  
     combine (There a1) (There a2) = There (combine a1 a2)  
 
--- Tupeln von Halbgruppen sind wieder Halbgruppen.
+-- Tupel von Halbgruppen sind wieder Halbgruppen.
 instance (Semigroup a, Semigroup b) => Semigroup (a, b) where
     combine (a1, b1) (a2, b2) =
         (combine a1  a2, combine b1 b2)
@@ -768,7 +768,7 @@ instance Monoid DisjunctiveBool where
 instance Semigroup a => Monoid (Optional a) where
     neutral = NotThere
 
--- Tupeln von Monoiden sind wieder Monoide
+-- Tupel von Monoiden sind wieder Monoide
 --instance (Monoid a, Monoid b) => Monoid (a, b) where
 --    neutral = ??
 
