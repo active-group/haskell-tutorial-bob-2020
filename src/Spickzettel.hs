@@ -7,165 +7,30 @@ module Spickzettel where
 
 import Prelude hiding (Foldable, Functor, Semigroup, Monoid)
 
--- Variablen
-z :: Int
-z = 3
-
--- Funktionen
--- Zahl verdoppeln
-double :: Int -> Int
-double x = x * 2
-
 -- Zwei Zahlen addieren
 add :: Int -> Int -> Int
 add x y = x + y
 
--- curried function
--- add' :: Int -> (Int -> Int)
--- (add' x) y = x + y
+-- curried function - Beispiele
+func1 :: Int -> Int
+func1 = add 1
 
--- Beispiel:
+result1 :: Int
+result1 = func1 2 -- 3
+
+func2 :: Int -> Int
+func2 = add 2
+
+result2 :: Int
+result2 = func2 2 -- 4
+
 add' :: Int -> (Int -> Int)
-(add' 1) y = 1 + y
-
--- Ein Aggregatzustand ist eins der folgenden:
--- - gasförmig
--- - flüssig
--- - fest
-data State = Gas | Liquid | Solid
- deriving Show
-
--- Agreggatzustand von Wasser
-computeState :: Float -> State
-computeState t
-    | t < 0 = Solid
-    | (t >= 0) && (t <= 100) = Liquid
-    | t > 100 = Gas
-
--- Typische Temperatur
--- pattern matching
-typicalTemp :: State -> Float
-typicalTemp Gas = 150
-typicalTemp Liquid = 20
-typicalTemp Solid = -20
-
--- Eine Form ist eins der folgenden:
--- - Kreis
--- - Rechteck
-data Shape = Circle Float | Rect Float Float
- deriving (Show, Eq)
-
--- Wir erstellen ein Quadrat
-square :: Float -> Shape
-square n = Rect n n
-
--- Wir berechnen die Fläche
--- pattern matching
-area :: Shape -> Float
-area (Circle r) = pi * r^2
-area (Rect x y) = x * y
-
--- Wir berechnen den Umfang
--- pattern matching
-circumference :: Shape -> Float
-circumference (Circle r) = 2 * pi * r
-circumference (Rect x y) = 2 * x + 2 * y
-
--- Zusammengesetzte Daten
--- Ein Gürteltier hat die folgenden Eigenschaften:
--- - Lebendigkeit
--- - Gewicht
---data Dillo = Dillo Liveness Int
---deriving Show
-
--- Brauchen Datendefinition für Lebendigkeit:
--- Lebendigkeit kann folgende Werte annehmen:
--- - tot
--- - lebendig
-data Liveness = Dead | Alive
- deriving (Show, Eq)
-
--- Beispiele
-
-dillo2 = Dillo Dead 12 -- totes Gürteltier, 12kg
-
--- Lebt der Dillo?
--- pattern matching
---liveness :: Dillo -> Liveness
---liveness (Dillo Alive _) = Alive
---liveness (Dillo Dead _) = Dead
-
--- Beispiele
---res1 = liveness dillo1 -- Alive
---res2 = liveness dillo2 -- Dead
-
--- Gewicht des Dillos?
--- pattern matching
---weight :: Dillo -> Int
---weight (Dillo _ w) = w
-
--- Beispiel
---res3 = weight dillo1 -- 10
- 
--- Besser: Record Syntax
---data Dillo = Dillo {dilloLiveness :: Liveness,
---                    dilloWeight :: Int}
---deriving (Show, Eq)
-
--- Beispiele
---res4 = dilloLiveness dillo1 -- Alive
---res5 = dilloLiveness dillo2 -- Dead
---res6 = dilloWeight dillo1 -- 10
-
--- Gürteltier füttern
---feedDillo :: Int -> Dillo -> Dillo
---feedDillo amount (Dillo Alive weight) = Dillo Alive (weight + amount)
---feedDillo amount (Dillo Dead weight) = Dillo Dead weight
-
--- Beispiele
---dillo3 = feedDillo 1 dillo1
---dillo4 = feedDillo 1 dillo2
-
--- Gürteltier überfahren
--- pattern matching
---runOverDillo :: Dillo -> Dillo
---runOverDillo (Dillo _ weight) = Dillo Dead weight
-
--- Beispiele
---dillo5 = runOverDillo dillo3
---dillo6 = runOverDillo dillo2
-
--- Algebraischer Datentyp: Gemischte Daten von zusammengesetzten Daten
--- Ein Tier ist entweder ein Dillo oder ein Papagei:
-
-data Animal = Dillo { dilloLiveness :: Liveness,
-                      dilloWeight :: Int }
-            | Parrot { parrotSentence :: String,
-                       parrotWeight :: Int }
- deriving Show
-
--- Beispiele
-dillo7 = Dillo Alive 10
-dillo8 = Dillo Dead 12
-parrot1 = Parrot "Der Schatz ist am Silbersee" 5
-
--- Tiere füttern
-feedAnimal :: Int -> Animal -> Animal
-feedAnimal amount (Dillo Alive weight) =
-    Dillo Alive (weight + amount)
-feedAnimal amount (Dillo Dead weight) =
-    Dillo Dead weight
-feedAnimal amount (Parrot sentence weight) =
-    Parrot sentence (weight + amount)
-
--- Beispiele
-dillo9 = feedAnimal 1 dillo7
-dillo10 = feedAnimal 2 dillo8
-parrot2 = feedAnimal 1 parrot1
+add' x = add x
+-- add' x y = add x y = x + y
 
 -- Listen ([] ist ein parametrisierter Typkonstruktor):
 
--- Beispiele:
+-- Beispiele
 list1 :: [Int]
 list1 = [5] -- 1-elementige Liste: 5
 
@@ -173,7 +38,7 @@ list2 :: [Int]
 list2 = [5, 7] -- 2-elementige Liste: 5, 7
 
 list3 :: [Int]
-list3 = 12:list2 -- 3-elementige Liste: 12 5 7, : fügt ein Element vorne an die Liste an
+list3 = 12:list2 -- 3-elementige Liste: 12 5 7, (:) fügt ein Element vorne an die Liste an
 
 list4 :: [Bool]
 list4 = [False, True, False] -- 3-elementige Liste: False, True, False
@@ -188,15 +53,34 @@ list7 :: [[Char]]
 list7 = [['a', 'b'], ['c', 'd', 'e']] -- 2-elementige Liste: ['a', 'b'], ['c', 'd', 'e']
 
 -- Funktionen auf Listen:
+x1 :: Integer
 x1 = sum [1, 2, 3, 4, 5] -- 15, Addiere Einträge in einer Liste auf
+
+x2 :: Integer
 x2 =  head [1, 2, 3, 4, 5] -- 1, erster Eintrag aus der Liste
+
+list8 :: [Integer]
 list8 = tail [1, 2, 3, 4 ,5] -- [2, 3, 4 ,5], Liste ohne den ersten Eintrag
+
+x3 :: Integer
 x3 = [1, 2, 3, 4, 5] !! 2 -- 3, dritter Eintrag aus der Liste
+
+list9 :: [Integer]
 list9 = take 3 [1, 2, 3, 4, 5] -- [1, 2, 3], die ersten drei Einträge aus der Liste
+
+list10 :: [Integer]
 list10 = drop 3 [1, 2, 3, 4, 5] -- [4, 5], Liste ohne die ersten drei Einträge
+
+x4 :: Int
 x4 = length [1, 2, 3, 4, 5] -- 5, Anzahl der Einträge in einer Liste
+
+x5 :: Integer
 x5 = product [1, 2, 3, 4, 5] -- 120, multipliziere Einträge in einer Liste auf
+
+list11 :: [Integer]
 list11 = [1, 2, 3] ++ [4, 5] -- [1, 2, 3, 4, 5], verbinde zwei Listen
+
+list12 :: [Integer]
 list12 = reverse [1, 2, 3, 4, 5] -- [5, 4, 3, 2, 1], drehe die Reihenfolge der Einträge in einer Liste um
 
 -- Spiele mit Funktionen auf Listen:
@@ -204,28 +88,93 @@ list12 = reverse [1, 2, 3, 4, 5] -- [5, 4, 3, 2, 1], drehe die Reihenfolge der E
 splitListAt :: Int -> [a] -> ([a], [a])
 splitListAt n xs = (take n xs, drop n xs)
 
+tuple1 :: ([Integer], [Integer])
 tuple1 = splitListAt 3 [1, 2, 3, 4, 5] -- ([1, 2, 3], [4, 5])
 
 -- Eingebaut:
 -- tuple1 = splitAt 3 [1, 2, 3, 4, 5] -- ([1, 2, 3], [4, 5])
 
--- Rekursion:
+-- Beispiele für Rekursion:
+
+-- Führe Multiplikation auf wiederholte Addition zurück:
+mult :: Int -> Int -> Int
+mult m 0 = 0
+mult m n = m + (mult m (n-1))
+
+-- Beispiel
+x6 :: Int
+x6 = mult 4 3 -- 12
+-- Zwischenschritte:
+-- mult 4 3
+--                                    {apply mult}
+-- 4 + (mult 4 2)
+--                                    {apply mult}
+-- 4 + (4 + (mult 4 1))
+--                                    {apply mult}
+-- 4 + (4 + (4 + (mult 4 0)))
+--                                    {apply mult}
+-- 4 + (4 + (4 + 0))
+-- 12
+
+-- Führe Potenzieren auf wiederholte Multiplikation zurück:
+pow :: Int -> Int -> Int
+pow m 0 = 1
+pow m n = m * (pow m (n-1))
+
+-- Beispiel
+x7 :: Int
+x7 = pow 4 3 -- 64
+-- Zwischenschritte:
+-- pow 4 3
+--                                    {apply pow}
+-- 4 * (pow 4 2)
+--                                    {apply pow}
+-- 4 * (4 * (pow 4 1))
+--                                    {apply pow}
+-- 4 * (4 * (4 * (pow 4 0)))
+--                                    {apply pow}
+-- 4 * (4 * (4 * 1))
+-- 64
+
+-- Berechne Fakultät:
+fac :: Int -> Int
+fac 0 = 1
+fac n = n * fac (n-1)
+
+-- Beispiel
+x8 :: Int
+x8 = fac 3 -- 6
+-- Zwischenschritte:
+-- fac 3
+--                                     {apply fac}
+-- 3 * (fac 2)
+--                                     {apply fac}
+-- 3 * (2 * (fac 1))
+--                                     {apply fac}
+-- 3 * (2 * (1 * (fac 0)))
+--                                     {apply fac}
+-- 3 * (2 * (1 * 1))
+--6
+
 -- Natürliche Zahlen ab n:
 natsFrom :: Integer -> [Integer]
 natsFrom n = n : natsFrom (n + 1)
 
 -- Natürliche Zahlen ab 0:
+nats :: [Integer]
 nats = natsFrom 0
 -- Zwischenschritte:
 -- natsfrom 0 = 0 : (1 : (2 : (3 : [...])))
 
--- Rekursion auf Listen:
+-- Beispiele für Rekursion auf Listen:
+
 -- Addiere Einträge in einer Liste auf
 listSum :: [Int] -> Int
 listSum [] = 0
 listSum (first:rest) = first + (listSum rest)
 
---x1 = listSum [1, 2, 3, 4, 5] -- 15
+x9 :: Int
+x9 = listSum [1, 2, 3, 4, 5] -- 15
 -- Zwischenschritte:
 -- listSum [1, 2, 3, 4, 5]
 --                                                {apply listSum}
@@ -250,6 +199,7 @@ strikeMultiples n (first:rest) =
     then strikeMultiples n rest
     else first : (strikeMultiples n rest)
 
+list13 :: [Integer]
 list13 = strikeMultiples 3 [1, 2, 3, 4, 5, 6, 7, 8, 9] -- [1, 2, 4, 5, 7, 8]
 -- Zwischenschritte:
 -- strikeMultiples 3 [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -280,6 +230,7 @@ sieve :: [Integer] -> [Integer]
 sieve [] = []
 sieve (first:rest) = first : (sieve (strikeMultiples first rest))
 
+list14 :: [Integer]
 list14 = sieve [9, 3, 27, 2, 4, 25] -- [9, 3, 2, 25]
 -- Zwischenschritte:
 -- sieve [9, 3, 27, 2, 4, 25]
@@ -301,12 +252,13 @@ list14 = sieve [9, 3, 27, 2, 4, 25] -- [9, 3, 2, 25]
 -- 9 : (3 : (2 : (25 : [])))
 -- [9, 3, 2, 25]
 
--- zip:
+-- Zwei Listen zippen:
 zipLists :: [a] -> [b] -> [(a, b)]
 zipLists [] _ = []
 zipLists _ [] = []
 zipLists (x:xs) (y:ys) = (x,y) : zipLists xs ys
 
+list15 :: [(Char,Int)]
 list15 = zipLists ['a', 'b', 'c'] [1, 2, 3, 4] -- [('a', 1), ('b', 2), ('c', 3)]
 -- Zwischenschritte:
 -- zipLists ['a', 'b', 'c'] [1, 2, 3, 4]
@@ -320,8 +272,7 @@ list15 = zipLists ['a', 'b', 'c'] [1, 2, 3, 4] -- [('a', 1), ('b', 2), ('c', 3)]
 -- ('a', 1) : (('b', 2) : (('c', 3) : []))
 -- [('a', 1), ('b', 2), ('c', 3)]
 
--- Eingebaut:
--- list16 = zip ['a', 'b', 'c'] [1, 2, 3, 4] -- [('a', 1), ('b', 2), ('c', 3)]
+-- Eingebaut: zip
 
 -- Mehrfache Rekursion:
 -- quicksort:
@@ -332,6 +283,7 @@ qsort (x:xs) = qsort smaller ++ [x] ++ qsort larger
                  smaller = [a | a <- xs, a <= x]
                  larger = [b | b <- xs, b > x]
 
+list16 :: [Int]
 list16 = qsort [9, 18, 81, 27, 36, 90, 72, 45, 63, 54] -- [9, 18, 27, 36, 45, 54, 63, 72, 81, 90]
 -- Zwischenschritte:
 -- qsort [9, 18, 81, 27, 36, 90, 72, 45, 63, 54]
@@ -368,6 +320,7 @@ odds :: [a] -> [a]
 odds [] = []
 odds (_:xs) = evens xs
 
+list17 :: String
 list17 = evens "abcde" --"ace"
 -- Zwischenschritte:
 -- evens "abcde"
@@ -385,28 +338,15 @@ list17 = evens "abcde" --"ace"
 -- 'a' : ('c' : ('e' : []))
 -- "ace"
 
--- Funktionen höherer Ordnung:
-composition :: (b -> c) -> (a -> b) -> (a -> c)
-composition f g = \x -> f (g x)
+-- Beispiele für Funktionen höherer Ordnung auf Listen:
 
--- Beispiel:
-i :: Int -> Int
-i a = 2 * a
-
-j :: Int -> Int
-j a = 3 * a
-
-fkt1 = composition j i
-
-x6 = fkt1 1 -- 6
-
--- Funktionen höherer Ordnung auf Listen:
--- map:
+-- Eine Funktion auf jeden Eintrag einer Liste anwenden: 
 listMap :: (a -> b) -> [a] -> [b]
 listMap f [] = []
 listMap f (x:xs) = (f x) : (listMap f xs)
 
 -- Bestimme die ersten 5 ungeraden Zahlen:
+list18 :: [Int]
 list18 = listMap (\x -> x * 2 + 1) [0, 1, 2, 3, 4] -- [1, 3, 5, 7, 9]
 -- Zwischenschritte:
 -- listMap (\x -> x * 2 + 1) [0, 1, 2, 3, 4]
@@ -424,10 +364,9 @@ list18 = listMap (\x -> x * 2 + 1) [0, 1, 2, 3, 4] -- [1, 3, 5, 7, 9]
 -- 1 : (3 : (5 : (7 : (9 : []))))
 -- [1, 3, 5, 7, 9]
 
--- Eingebaut:
--- list18 = map (\x -> x * 2 + 1) [0, 1, 2, 3, 4] -- [1, 3, 5, 7, 9]
+-- Eingebaut: map
 
--- filter:
+-- Eine Liste filtern:
 listFilter :: (a -> Bool) -> [a] -> [a]
 listFilter p [] = []
 listFilter p (x:xs) | p x = x : listFilter p xs
@@ -437,6 +376,7 @@ listFilter p (x:xs) | p x = x : listFilter p xs
 strikeMultiples' :: Integer -> [Integer] -> [Integer]
 strikeMultiples' n list = listFilter (\ el -> (el `rem` n) /= 0) list
 
+list19 :: [Integer]
 list19 = strikeMultiples' 3 [1, 2, 3, 4, 5, 6, 7, 8, 9] -- [1, 2, 4, 5, 7, 8]
 -- Zwischenschritte:
 -- strikeMultiples' 3 [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -462,11 +402,9 @@ list19 = strikeMultiples' 3 [1, 2, 3, 4, 5, 6, 7, 8, 9] -- [1, 2, 4, 5, 7, 8]
 -- 1 : (2 : (4 : (5 : (7 : (8 : [])))))
 -- [1, 2, 4, 5, 7, 8]
 
--- Eingebaut:
--- strikeMultiples' :: Integer -> [Integer] -> [Integer]
--- strikeMultiples' n list = filter (\ el -> (el `rem` n) /= 0) list
+-- Eingebaut: filter
 
--- foldr:
+-- Die Einträge einer Liste miteinander verknüpfen, am Ende der Liste angefangen:
 listFoldr :: (a -> b -> b) -> b -> [a] -> b
 listFoldr f v [] = v
 listFoldr f v (x:xs) = f x (listFoldr f v xs)
@@ -475,7 +413,8 @@ listFoldr f v (x:xs) = f x (listFoldr f v xs)
 sum' :: [Int] -> Int
 sum' xs = listFoldr (+) 0 xs
 
-x7 = sum' [1, 2, 3, 4, 5] -- 15
+x11 :: Int
+x11 = sum' [1, 2, 3, 4, 5] -- 15
 -- Zwischenschritte:
 -- sum' [1, 2, 3, 4, 5]
 --                                                   {apply sum'}
@@ -494,14 +433,13 @@ x7 = sum' [1, 2, 3, 4, 5] -- 15
 -- (+) 1 ((+) 2 ((+) 3 ((+) 4 ((+) 5 0))))
 -- 15
 
--- Eingebaut:
--- sum' :: [Int] -> Int
--- sum' xs = foldr (+) 0 xs
+-- Eingebaut: foldr
 
--- concatenate:
+-- Zwei Listen zusammenkleben:
 concatenate :: [a] -> [a] -> [a]
 concatenate list1 list2 = listFoldr (:) list2 list1
 
+list20 :: [Int]
 list20 = concatenate [1, 2, 3] [4, 5] -- [1, 2, 3, 4, 5]
 -- Zwischenschritte:
 -- concatenate [1, 2, 3] [4, 5]
@@ -517,10 +455,9 @@ list20 = concatenate [1, 2, 3] [4, 5] -- [1, 2, 3, 4, 5]
 -- (:) 1 ((:) 2 ((:) 3 [4, 5]))
 -- [1, 2, 3, 4, 5]
 
--- Eingebaut:
--- list20 = [1, 2, 3] ++ [4, 5]
+-- Eingebaut: (++)
 
--- compose:
+-- Eine Liste von Funktionen von a nach a verketten:
 compose :: [a -> a] -> (a -> a)
 compose = listFoldr (.) id
 
@@ -535,7 +472,9 @@ h a = 4 * a
 
 fkt2 :: Int -> Int
 fkt2 = compose [f, g, h] -- f . g . h
-x8 = fkt2 1 -- 24
+
+x12 :: Int
+x12 = fkt2 1 -- 24
 -- Zwischenschritte:
 -- compose [f, g, h]
 --                                                    {apply compose}
@@ -552,7 +491,7 @@ x8 = fkt2 1 -- 24
 -- (.) f ((.) g ((.) h id))
 -- f . g . h
 
--- foldl:
+-- Die Einträge einer Liste miteinander verknüfen, am Anfang der Liste angefangen:
 listFoldl :: (a -> b -> b) -> b -> [a] -> b
 listFoldl f v [] = v
 listFoldl f v (x:xs) = listFoldl f (f x v) xs
@@ -561,7 +500,8 @@ listFoldl f v (x:xs) = listFoldl f (f x v) xs
 sum'' :: [Int] -> Int
 sum'' xs = listFoldl (+) 0 xs
 
-x9 = sum'' [1, 2, 3, 4, 5] -- 15
+x13 :: Int
+x13 = sum'' [1, 2, 3, 4, 5] -- 15
 -- Zwischenschritte:
 -- sum'' [1, 2, 3, 4, 5]
 --                                                    {apply sum''}
@@ -580,249 +520,4 @@ x9 = sum'' [1, 2, 3, 4, 5] -- 15
 -- ((+) ((+) ((+) ((+) ((+) 0 1) 2) 3) 4) 5)
 -- 15
 
--- Eingebaut:
--- sum'' :: [Int] -> Int
--- sum'' xs = foldl (+) 0 xs
-
--- Halbgruppen, Monoide, Funktoren, Foldables
--- Map:
-data Map key value = Map [(key, value)]
- deriving Show
-
--- Beispiel:
-map1 :: Map String String
-map1 = Map [("Mike", "Sperber"), ("Angela", "Merkel")]
-
-unMap (Map list) = list
-
-list21 = unMap map1 -- [("Mike","Sperber"),("Angela","Merkel")]
-
--- mapMap:
-mapMap :: (a -> b) -> (Map key) a -> (Map key) b
-mapMap f (Map []) = Map []
-mapMap f (Map ((key, a):rest)) =
---    let Map frest = mapMap f (Map rest)
---    in Map ((key, f a):frest)
-    Map ((key, f a):unMap (mapMap f (Map rest)))
-
--- Beispiel:
-map2 = mapMap reverse map1 -- Map [("Mike","rebrepS"),("Angela","lekreM")]
-
--- key-value-Paar in eine Map einfügen:
-mapPut :: key -> value -> Map key value -> Map key value
-mapPut key value (Map list) = Map ((key, value) : list)
-
--- Beispiel:
-map3 = mapPut "Erika" "Bor" map1 -- Map [("Erika","Bor"),("Mike","Sperber"),("Angela","Merkel")]
-
--- Optional, manchmal da, manchmal nicht:
-data Optional a =
-    NotThere
-  | There a
- deriving Show
-
--- Beispiel:
-opt1 :: Optional String
-opt1 = There "Schokoladensahnetorte"
-
-opt2 :: Optional String
-opt2 = NotThere
-
--- Eingebaut:
--- data Maybe a = Nothing | Just a
-
-optionalMap :: (a -> b) -> Optional a -> Optional b
-optionalMap f NotThere  = NotThere
-optionalMap f (There a) = There (f a)
-
--- Beispiel:
-opt3 = optionalMap (++ " mit Sahne") opt1 -- There "Schokoladensahnetorte mit Sahne"
-
-opt4 = optionalMap (++ " mit Sahne") opt2 -- NotThere
-
--- Eintrag in Map suchen
-mapGet :: Eq key => -- wenn key vergleichbar ist ...
-            key -> Map key value -> Optional value
-mapGet key (Map []) = NotThere
-mapGet key' (Map ((key, value):rest)) =
-    if key' == key
-    then There value
-    else mapGet key' (Map rest)
-
--- Beispiel:
-opt5 = mapGet "Erika" map1 -- NotThere
-
-opt6 = mapGet "Erika" map3 -- "Bor"
-
--- Halbgruppe / Semigroup: Menge + Kombinator + Assoziativgesetz
-class Semigroup (a :: *) where
-    combine :: a -> a -> a
-    -- (a `combine` b) `combine` c = a `combine (b `combine` c)
-
--- Die Menge Int erfüllt mit dem Kombinator (+) das Assoziativgesetz und ist eine Halbgruppe.
--- (+) :: Integer -> Integer -> Integer
--- (a + b) + c = a + (b + c) -- Assoziativgesetz
-instance Semigroup Integer where
-    combine :: Integer -> Integer -> Integer
-    combine = (+)
-
--- andere Möglichkeit Int zu einer Halbgruppe zu machen:
-
-newtype MultInt = Mult Int
-  deriving (Show, Eq, Ord)
-
--- Die Menge Int erfüllt mit dem Kombinator (*) das Assoziativgesetz und ist eine Halbgruppe.
--- (*) :: Integer -> Integer -> Integer
--- (a * b) * c = a * (b * c)
-instance Semigroup MultInt where
-    combine (Mult a) (Mult b) = Mult (a * b)
-
--- Die Menge [a] erfüllt mit dem Kombinator (++) das Assoziativgesetz und ist eine Halbgruppe.
--- (++) :: [a] -> [a] -> [a]
--- (l1 ++ l2) ++ l3 = l1 ++ (l2 ++ l3)
-instance Semigroup [a] where
-    combine l1 l2 = l1 ++ l2
-
--- Die Menge (a -> a) erfüllt mit dem Kombinator (.) das Assoziativgesetz und ist eine Halbgruppe.
--- (.) :: (a -> a) -> (a -> a) -> (a -> a)
--- (f . g) . h = f . ( g . h)
-instance Semigroup ((->) a a) where
-    combine f g = f . g
-
--- True  && True = True
--- True  && False = False
--- False && True = False
--- False && False = False
-
--- Die Menge Bool erfüllt mit dem Kombinator (&&) das Assoziativgesetz und ist eine Halbgruppe.
--- (&&) :: Bool -> Bool -> Bool
--- (b1 && b2) && b3 = b1 && (b2 && b3)
-instance Semigroup Bool where
-    combine b1 b2 = b1 && b2
-
--- andere Möglichkeit, Bool zu einer Halbgruppe zu machen:
-
--- True  || True = True
--- True  || False = True
--- False || True = True
--- False || False = False
-
-newtype DisjunctiveBool = Disjunctive Bool
-  deriving (Show, Eq, Ord)
-
--- Die Menge DisjunctiveBool erfüllt mit dem Kombinator (||) das Assoziativgesetz und ist eine Halbgruppe.
--- (||) :: Bool -> Bool -> Bool
--- (b1 || b2) || b3 = b1 || (b2 || b3)
-instance Semigroup DisjunctiveBool where
-    combine (Disjunctive b1) (Disjunctive b2) = Disjunctive (b1 || b2)
-
--- Ist a eine Halbgruppe, dann ist auch Optional a eine Halbgruppe
-instance Semigroup a => Semigroup (Optional a) where
-    combine NotThere (There a1) = There a1  
-    combine (There a1) NotThere = There a1  
-    combine (There a1) (There a2) = There (combine a1 a2)  
-
--- Tupel von Halbgruppen sind wieder Halbgruppen.
-instance (Semigroup a, Semigroup b) => Semigroup (a, b) where
-    combine (a1, b1) (a2, b2) =
-        (combine a1  a2, combine b1 b2)
-
--- neutrales Element
--- n + 0 = 0 + n = n -- bzgl. (+)
--- n * 1 = 1 * n = n -- bzgl. (*)
--- [] ++ l = l ++ [] -- bzgl. (++)
-
--- Monoid: Halbgruppe + neutrales Element
-class Semigroup a => Monoid a where
-    neutral :: a
-
--- Die Halbgruppe Int bzgl. (+) ist mit 0 ein Monoid.
-instance Monoid Integer where
-    neutral = 0
-
--- Die Halbgruppe MultInt bzgl. (*) ist mit Mult 1 ein Monoid.
-instance Monoid MultInt where
-    neutral = Mult 1
-
--- Die Halbgruppe [a] ist mit [] ein Monoid.
-instance Monoid [a] where
-    neutral = []
-
--- Identität
-identity :: a -> a
-identity a = a
-
--- Die Halbgruppe (a -> a) ist mit identity ein Monoid.
-instance Monoid ((->) a a) where
-    neutral = identity
-
--- Die Halbgruppe Bool bzgl. && ist mit True ein Monoid
-instance Monoid Bool where
-    neutral = True
-
--- Die Halbgruppe Bool bzgl. || ist mit False ein Monoid
-instance Monoid DisjunctiveBool where
-    neutral = Disjunctive False
-
--- Ist a eine Halbgruppe (?), dann ist die Halbgruppe Optional a mit NotThere ein Monoid
-instance Semigroup a => Monoid (Optional a) where
-    neutral = NotThere
-
--- Tupel von Monoiden sind wieder Monoide
---instance (Monoid a, Monoid b) => Monoid (a, b) where
---    neutral = ??
-
--- Funktor
-class Functor (constructor :: * -> *) where
-    mmap :: (a -> b) -> constructor a -> constructor b
-    -- mmap identity = identity
-    -- mmap (f . g) = (mmap f) . (mmap g)
-
--- f :: b -> c, g :: a -> b, f . g :: a -> c
--- mmap g :: constructor a -> constructor b, mmap f :: constructor b -> constructor c, (mmap f . mmap g) :: constructor a -> constructor c
-
-instance Functor [] where
-    mmap = map
-
-instance Functor (Map key) where
-    mmap = mapMap
-
-instance Functor Optional where
-    mmap = optionalMap
-
-instance Functor ((->) r) where
-    mmap = (.)
--- ((->) r) ist die Menge der Funktionen mit Domäne vom Typ r
-
--- 2 + 3, ((+) 2 3) , a -> b, ((->) a b)
-
--- mmap :: (a -> b) -> ((->) r a) -> ((->) r b) 
-
--- f :: a -> b, g :: r -> a
-
--- mmap f g = f . g
-
--- Beweis:
--- mmap id_a g = id_a . g = g = id_((->) a) g
--- h :: b -> c
--- mmap (h . f) g = (h . f) . g = h . (f . g) = mmap h (mmap f g) = (mmap h . mmap f) g
-
--- Beispiel:
-fkt3 :: Int -> Int
-fkt3 = mmap (*3) (+100)
-
-x10 = fkt3 1 -- 303
-
--- Foldable
-class Foldable (constructor :: * -> *) where
-    myfoldr :: (a -> b -> b) -> b -> constructor a -> b
-
-instance Foldable [] where
-    myfoldr = listFoldr
-
-optionalFoldr :: (a -> b -> b) -> b -> Optional a -> b
-optionalFoldr f v NotThere = v
-optionalFoldr f v (There a) = f a v
-
-instance Foldable Optional where
-    myfoldr = optionalFoldr
+-- Eingebaut: foldl
