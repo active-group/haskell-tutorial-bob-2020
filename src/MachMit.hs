@@ -15,62 +15,75 @@ import Prelude hiding (Foldable, Functor, Semigroup, Monoid)
 -- Integer
 -- Float, z.B. -12.34, 1.0, 3.1415927
 -- Double
--- Tupel (T1, ..., Tn), () leerer Tupel
+-- Tupel (T1, ..., Tn), () leerer Tupel (Sequenz von Komponenten, die je unterschiedliche Typen annhemen können)
+-- Listen (später)
 
 -- Variablen
+z :: Integer
 z = 3
 
 -- Funktionen
 -- Zahl verdoppeln
 double :: Int -> Int
 double x = x * 2
+-- \x -> x * 2
 
 -- Zwei Zahlen addieren
 add :: Int -> Int -> Int
 add x y = x + y
 
 -- curried function - Beispiele
+-- Typinferenz: Haskell schlägt hier für func1 automatisch Int -> Int vor.
+-- Wenn add :: Int -> Int -> Int ist und bereits ein 1 :: Int eingesetzt ist (= func1),
+-- bleibt für func1 keine andere Möglichkeit.
+-- Allgemein gilt: Ist f :: a -> b und x :: a, dann ist f x :: b.
 
+func1 :: Int -> Int
+func1 = add 1
+-- func1 y = add 1 y = 1 + y
 
 -- Ein Aggregatzustand ist eins der folgenden:
 -- - gasförmig
 -- - flüssig
 -- - fest
 data State = Gas | Liquid | Solid
+    deriving Show
+
+-- data GanzZahlen = ... -1 | 0 | 1 ...
+-- data Bool = True | False
 
 -- Agreggatzustand von Wasser
 -- guards
 computeState :: Float -> State
-computeState t =
+{- computeState t =
   if t < 0
   then Solid
   else
     if (t >= 0) && (t <= 100)
     then Liquid
-      else Gas
-
-{- computeState t
+      else Gas -}
+computeState t
     | t < 0 = Solid
     | (t >= 0) && (t <= 100) = Liquid
-    | otherwise = Gas -}
+    | otherwise = Gas
 
 -- Typische Temperatur
 -- pattern matching
 typicalTemp :: State -> Float
-typicalTemp state =
+{-typicalTemp state =
     case state of
         Gas -> 150
         Liquid -> 20
-        Solid -> -20
-
-{- typicalTemp Gas = 150
+        Solid -> -20 -}
+typicalTemp Gas = 150
 typicalTemp Liquid = 20
-typicalTemp Solid = -20 -}
+typicalTemp Solid = -20
 
 -- Eine Form ist eins der folgenden:
 -- - Kreis
 -- - Rechteck
 data Shape = Circle Float | Rect Float Float
+    deriving Eq
 
 -- Wir erstellen ein Quadrat
 square :: Float -> Shape
@@ -79,13 +92,12 @@ square n = Rect n n
 -- Wir berechnen die Fläche
 -- pattern matching
 area :: Shape -> Float
-area shape =
+{- area shape =
     case shape of
         Circle r -> pi * r^2
-        Rect x y -> x * y
-
-{- area (Circle r) = pi * r^2
-area (Rect x y) = x * y -}
+        Rect x y -> x * y -}
+area (Circle r) = pi * r^2
+area (Rect x y) = x * y
 
 -- Wir berechnen den Umfang
 -- pattern matching
@@ -94,7 +106,6 @@ circumference shape =
     case shape of
         Circle r -> 2 * pi * r
         Rect x y -> 2 * x + 2 * y
-
 {- circumference (Circle r) = 2 * pi * r
 circumference (Rect x y) = 2 * x + 2 * y -}
 
@@ -105,7 +116,7 @@ circumference (Rect x y) = 2 * x + 2 * y -}
 data Liveness = Dead | Alive
  deriving (Show, Eq)
 
--- Zusammengesetzte Daten
+{- -- Zusammengesetzte Daten
 -- Ein Gürteltier hat die folgenden Eigenschaften:
 -- - Lebendigkeit
 -- - Gewicht
@@ -137,7 +148,7 @@ weight (Dillo _ w) = w
 
 -- Beispiel
 res3 :: Int
-res3 = weight dillo1 -- 10
+res3 = weight dillo1 -- 10 -}
  
 {- -- Besser: Record Syntax
 data Dillo = Dillo {dilloLiveness :: Liveness,
@@ -200,8 +211,8 @@ feedParrot amount (Parrot sentence weight) = Parrot sentence (weight + amount)
 -- Beispiel
 parrot3 :: Parrot
 parrot3 = feedParrot 1 parrot1 -- Parrot "Der Schatz ist im Silbersee!" 6 -}
-
-{- -- Algebraischer Datentyp: Gemischte Daten von zusammengesetzten Daten
+ 
+-- Algebraischer Datentyp: Gemischte Daten von zusammengesetzten Daten
 -- Ein Tier ist entweder ein Dillo oder ein Papagei:
 data Animal = Dillo { dilloLiveness :: Liveness,
                       dilloWeight :: Int }
@@ -232,17 +243,23 @@ dillo3 = feedAnimal 1 dillo1 -- Dillo Alive 11
 dillo4 :: Animal
 dillo4 = feedAnimal 2 dillo2 -- Dillo Dead 12
 parrot2 :: Animal
-parrot2 = feedAnimal 1 parrot1 -- -- Parrot "Der Schatz ist im Silbersee!" 6 -}
+parrot2 = feedAnimal 1 parrot1 -- -- Parrot "Der Schatz ist im Silbersee!" 6
 
 -- Listen ([] ist ein parametrisierter Typkonstruktor):
+-- [a]; [True, True, False] und [True, False] sind vom Typ [Bool]
 
 -- Beispiele
+list2 :: [Int]
+list2 = [5, 7] -- 2-elementige Liste: 5, 7
 
+list3 :: [Int]
+list3 = 12:list2 -- 3-elementige Liste: 12 5 7, (:) fügt ein Element vorne an die Liste an, [12] ++ list2
 
 -- Funktionen auf Listen:
+list11 :: [Integer]
+list11 = [1, 2, 3] ++ [4, 5] -- [1, 2, 3, 4, 5], verbinde zwei Listen
 
-
--- Listen sind rekursive Datentypen:
+-- Listen sind rekursive Datentypen / gemischte Daten:
 -- Eine Liste ist entweder die leere Liste [] oder von der Form x:xs
 -- (wobei wenn x vom Typ a ist, ist xs vom Typ [a])
 
@@ -256,10 +273,58 @@ parrot2 = feedAnimal 1 parrot1 -- -- Parrot "Der Schatz ist im Silbersee!" 6 -}
 -- 1 : (2 : (3 : []))
 
 -- Rekursion:
+-- Führe Multiplikation auf wiederholte Addition zurück:
+mult :: Int -> Int -> Int
+mult m 0 = 0
+mult m n = m + (mult m (n-1))
 
+-- Beispiel
+x6 :: Int
+x6 = mult 4 3 -- 12
+-- Zwischenschritte:
+-- mult 4 3
+--                                    {apply mult}
+-- 4 + (mult 4 2)
+--                                    {apply mult}
+-- 4 + (4 + (mult 4 1))
+--                                    {apply mult}
+-- 4 + (4 + (4 + (mult 4 0)))
+--                                    {apply mult}
+-- 4 + (4 + (4 + 0))
+-- 12
+
+-- Natürliche Zahlen ab n:
+natsFrom :: Integer -> [Integer]
+natsFrom n = n : natsFrom (n + 1)
+
+-- Natürliche Zahlen ab 0:
+nats :: [Integer]
+nats = natsFrom 0
+-- Zwischenschritte:
+-- natsfrom 0 = 0 : (1 : (2 : (3 : [...])))
 
 -- Rekursion auf Listen:
+-- Addiere Einträge in einer Liste auf
+listSum :: [Int] -> Int
+listSum [] = 0
+listSum (first:rest) = first + (listSum rest)
 
+x9 :: Int
+x9 = listSum [1, 2, 3, 4, 5] -- 15
+-- Zwischenschritte:
+-- listSum [1, 2, 3, 4, 5]
+--                                                {apply listSum}
+-- 1 + listSum [2, 3, 4, 5]
+--                                                {apply listSum}
+-- 1 + 2 + listSum [3, 4, 5]
+--                                                {apply listSum}
+-- 1 + 2 + 3 + listSum [4, 5]
+--                                                {apply listSum}
+-- 1 + 2 + 3 + 4 + listSum [5]
+--                                                {apply listSum}
+-- 1 + 2 + 3 + 4 + 5 + listSum []
+--                                                {apply listSum}
+-- 1 + 2 + 3 + 4 + 5 + 0
 
 -- Funktionen höherer Ordnung:
 
@@ -269,14 +334,11 @@ composition :: (b -> c) -> (a -> b) -> (a -> c)
 composition f g = \x -> f (g x)
 
 -- Beispiel:
-i :: Int -> Int
-i a = 2 * a
-
-j :: Int -> Int
-j a = 3 * a
+triple :: Int -> Int
+triple x = 3 * x
 
 fkt1 :: Int -> Int
-fkt1 = composition j i
+fkt1 = composition triple double
 
 x10 :: Int
 x10= fkt1 1 -- 6
@@ -293,17 +355,17 @@ list18 :: [Int]
 list18 = listMap (\x -> x * 2 + 1) [0, 1, 2, 3, 4] -- [1, 3, 5, 7, 9]
 -- Zwischenschritte:
 -- listMap (\x -> x * 2 + 1) [0, 1, 2, 3, 4]
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (listMap (\x -> x * 2 + 1) [1, 2, 3, 4])
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (3 : (listMap (\x -> x * 2 + 1) [2, 3, 4]))
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (3 : (5 : (listMap (\x -> x * 2 + 1) [3, 4])))
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (3 : (5 : (7 : (listMap (\x -> x * 2 + 1) [4]))))
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (3 : (5 : (7 : (9 : (listMap (\x -> x * 2 + 1) [])))))
---                                                 {apply listMap}
+--                                                          {apply listMap}
 -- 1 : (3 : (5 : (7 : (9 : []))))
 -- [1, 3, 5, 7, 9]
 
@@ -340,41 +402,7 @@ x11 = sum' [1, 2, 3, 4, 5] -- 15
 
 -- Eingebaut: foldr
 
--- Halbgruppen, Monoide, Funktoren, Foldables
-
--- Map, Zusammenstellung von key-value-Paaren:
-data Map key value = Map [(key, value)]
- deriving Show
-
--- Beispiel
-map1 :: Map String String
-map1 = Map [("Mike", "Sperber"), ("Angela", "Merkel")]
-
-unMap :: Map key value -> [(key, value)]
-unMap (Map list) = list
-
-list21 :: [(String, String)]
-list21 = unMap map1 -- [("Mike","Sperber"),("Angela","Merkel")]
-
--- Wende eine Funktion auf jeden value-Eintrag einer Map an:
-mapMap :: (a -> b) -> (Map key) a -> (Map key) b
-mapMap f (Map []) = Map []
-mapMap f (Map ((key, a):rest)) =
---    let Map frest = mapMap f (Map rest)
---    in Map ((key, f a):frest)
-    Map ((key, f a):unMap (mapMap f (Map rest)))
-
--- Beispiel
-map2 :: Map String String
-map2 = mapMap reverse map1 -- Map [("Mike","rebrepS"),("Angela","lekreM")]
-
--- key-value-Paar in eine Map einfügen:
-mapPut :: key -> value -> Map key value -> Map key value
-mapPut key value (Map list) = Map ((key, value) : list)
-
--- Beispiel
-map3 :: Map String String
-map3 = mapPut "Erika" "Bor" map1 -- Map [("Erika","Bor"),("Mike","Sperber"),("Angela","Merkel")]
+-- Funktoren, Halbgruppen, Monoide, Foldables
 
 -- Optional, manchmal da, manchmal nicht:
 data Optional a =
@@ -402,30 +430,70 @@ opt3 = optionalMap (++ " mit Sahne") opt1 -- There "Schokoladensahnetorte mit Sa
 opt4 :: Optional String
 opt4 = optionalMap (++ " mit Sahne") opt2 -- NotThere
 
--- Eintrag in Map suchen:
-mapGet :: Eq key => -- wenn key vergleichbar ist ...
-            key -> Map key value -> Optional value
-mapGet key (Map []) = NotThere
-mapGet key' (Map ((key, value):rest)) =
-    if key' == key
-    then There value
-    else mapGet key' (Map rest)
+-- Funktor, z.B. [], Optional, ((->) r)
+class Functor (constructor :: * -> *) where
+    mmap :: (a -> b) -> constructor a -> constructor b
+    -- mit folgenden Funktoreigenschaften:
+    -- mmap identity_a = identity_constructor a
+    -- mmap (f . g) = (mmap f) . (mmap g)
 
--- Beispiel
-opt5 :: Optional String
-opt5 = mapGet "Erika" map1 -- NotThere
+-- Erläuterungen:
+-- identity_a :: a -> a ist die Identität auf a und entsprechend hat man mmap identity_a :: constructor a -> constructor a.
+-- Die erste Funktoreigenschaft besagt, dass mmap identity_a der Identität auf constructor a,
+-- also identity_constructor a :: constructor a -> constructor a entsprechen muss.
 
-opt6 :: Optional String
-opt6 = mapGet "Erika" map3 -- "Bor"
+-- Für g :: a -> b und f :: b -> c hat man f . g :: a -> c und entsprechend mmap (f . g) :: constructor a -> constructor c.
+-- Auf der anderen seite hat man mmap g :: constructor a -> constructor b und mmap f :: constructor b -> constructor c
+-- und entsprechend (mmap f . mmap g) :: constructor a -> constructor c.
+-- Die zweite Funktoreigenschaft besagt, dass die Abbildung mmap (f . g) der Abbildung (mmap f . mmap g) entsprechend muss.
+
+-- Der Typkonstruktor [] ist mit der Abbildung listMap ein Funktor
+instance Functor [] where
+    mmap = listMap
+
+-- Der Typkonstruktor Optional ist mit der Abbildung optionalMap ein Funktor
+instance Functor Optional where
+    mmap = optionalMap
+
+-- Der Typkonstruktor ((->) r) ist mit der Abbildung (.) ein Funktor
+instance Functor ((->) r) where
+    mmap = (.)
+
+-- Schreibweise:
+-- Analog dazu, dass man 2 + 3 auch als ((+) 2 3) schreiben kann, kann man a -> b auch als ((->) a b) schreiben.
+-- ((->) r) bezeichnet die Menge der Funktionen mit Domäne vom Typ r.
+
+-- Signatur von mmap im Fall von ((->) r):
+-- mmap :: (a -> b) -> ((->) r a) -> ((->) r b) bzw. mmap :: (a -> b) -> (r -> a) -> (r -> b),
+-- wenn man ein f :: a -> b und ein g :: r -> a in mmap einsetzt, soll eine Funktion r -> b rauskommen.
+-- Der Verkettungsoperator (.) bietet sich an, also: mmap f g = f . g.
+
+-- Zeige, dass ((->) r) mit (.) die Funktoreigenschaften erfüllt:
+-- Erste Funktoreigenschaft:
+-- Sei g :: r -> a
+-- mmap id_a g = id_a . g = g = id_((->) r a) g
+
+-- Zweite Funktoreigenschaft:
+-- Sei f :: a -> b und h :: b -> c. Dann hat man (h . f) :: a -> c.
+-- mmap (h . f) g = (h . f) . g = h . (f . g) = h . (mmap f g) = mmap h (mmap f g) = (mmap h . mmap f) g
+-- [mmap f :: (r -> a) -> (r -> b), mmap h :: (r -> b) -> (r -> c), (mmap h . mmap f) :: (r -> a) -> (r -> c)]
+
+-- Beispiel:
+fkt3 :: Int -> Int
+fkt3 = mmap (*3) (+100)
+
+x14 :: Int
+x14 = fkt3 1 -- 303
 
 -- Halbgruppe / Semigroup: Menge + Kombinator + Assoziativgesetz
 class Semigroup (a :: *) where
     combine :: a -> a -> a
+    -- Assoziativgesetz: 
     -- (a `combine` b) `combine` c = a `combine (b `combine` c)
 
 -- Die Menge Int erfüllt mit dem Kombinator (+) das Assoziativgesetz und ist eine Halbgruppe.
 -- (+) :: Integer -> Integer -> Integer
--- (a + b) + c = a + (b + c) -- Assoziativgesetz
+-- (a + b) + c = a + (b + c)
 instance Semigroup Integer where
     combine :: Integer -> Integer -> Integer
     combine = (+)
@@ -435,7 +503,7 @@ instance Semigroup Integer where
 newtype MultInt = Mult Int
   deriving (Show, Eq, Ord)
 
--- Die Menge Int erfüllt mit dem Kombinator (*) das Assoziativgesetz und ist eine Halbgruppe.
+-- Die Menge MultInt erfüllt mit dem Kombinator (*) das Assoziativgesetz und ist eine Halbgruppe.
 -- (*) :: Integer -> Integer -> Integer
 -- (a * b) * c = a * (b * c)
 instance Semigroup MultInt where
@@ -528,53 +596,6 @@ instance Monoid Bool where
 -- Die Halbgruppe Bool bzgl. || ist mit False ein Monoid
 instance Monoid DisjunctiveBool where
     neutral = Disjunctive False
-
--- Funktor
-class Functor (constructor :: * -> *) where
-    mmap :: (a -> b) -> constructor a -> constructor b
-    -- mmap identity = identity
-    -- mmap (f . g) = (mmap f) . (mmap g)
-
--- g :: a -> b, f :: b -> c, f . g :: a -> c
--- mmap g :: constructor a -> constructor b, mmap f :: constructor b -> constructor c, (mmap f . mmap g) :: constructor a -> constructor c
-
--- Der Typkonstruktor [] ist mit der Abbildung listMap ein Funktor
-instance Functor [] where
-    mmap = listMap
-
--- Der Typkonstruktor (Map key) ist mit der Abbildung mapMap ein Funktor
-instance Functor (Map key) where
-    mmap = mapMap
-
--- Der Typkonstruktor Optional ist mit der Abbildung optionalMap ein Funktor
-instance Functor Optional where
-    mmap = optionalMap
-
--- Der Typkonstruktor ((->) r) ist mit der Abbildung (.) ein Funktor
-instance Functor ((->) r) where
-    mmap = (.)
-
--- Schreibweise:
--- ((->) r) ist die Menge der Funktionen mit Domäne vom Typ r
-
--- 2 + 3, ((+) 2 3) , a -> b, ((->) a b)
-
--- Signatur von mmap:
--- mmap :: (a -> b) -> ((->) r a) -> ((->) r b) 
--- Für f :: a -> b und  g :: r -> a soll eine Funktion r -> b rauskommen
--- mmap f g = f . g 
-
--- Beweis:
--- mmap id_a g = id_a . g = g = id_((->) r a) g
--- Sei h :: b -> c
--- mmap (h . f) g = (h . f) . g = h . (f . g) = mmap h (mmap f g) = (mmap h . mmap f) g
-
--- Beispiel:
-fkt3 :: Int -> Int
-fkt3 = mmap (*3) (+100)
-
-x14 :: Int
-x14 = fkt3 1 -- 303
 
 -- Foldable
 class Foldable (constructor :: * -> *) where

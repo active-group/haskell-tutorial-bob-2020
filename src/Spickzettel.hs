@@ -180,13 +180,13 @@ x9 = listSum [1, 2, 3, 4, 5] -- 15
 --                                                {apply listSum}
 -- 1 + listSum [2, 3, 4, 5]
 --                                                {apply listSum}
--- 1 + 2 listSum [3, 4, 5]
+-- 1 + 2 + listSum [3, 4, 5]
 --                                                {apply listSum}
--- 1 + 2 + 3 listSum [4, 5]
+-- 1 + 2 + 3 + listSum [4, 5]
 --                                                {apply listSum}
--- 1 + 2 + 3 + 4 listSum [5]
+-- 1 + 2 + 3 + 4 + listSum [5]
 --                                                {apply listSum}
--- 1 + 2 + 3 + 4 + 5 listSum []
+-- 1 + 2 + 3 + 4 + 5 + listSum []
 --                                                {apply listSum}
 -- 1 + 2 + 3 + 4 + 5 + 0
 
