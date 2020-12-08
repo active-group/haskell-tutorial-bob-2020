@@ -15,7 +15,7 @@ import Prelude hiding (Foldable, Functor, Semigroup, Monoid)
 -- Integer
 -- Float, z.B. -12.34, 1.0, 3.1415927
 -- Double
--- Tupel (T1, ..., Tn), () leerer Tupel (Sequenz von Komponenten, die je unterschiedliche Typen annhemen können)
+-- Tupel (T1, ..., Tn), () leerer Tupel (Sequenz von Komponenten, die je unterschiedliche Typen annehmen können)
 -- Listen (später)
 
 -- Variablen
