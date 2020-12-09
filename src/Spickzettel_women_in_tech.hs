@@ -3,7 +3,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module MachMit where
+module Spickzettel_women_in_tech where
 
 import Prelude hiding (Foldable, Functor, Semigroup, Monoid)
 

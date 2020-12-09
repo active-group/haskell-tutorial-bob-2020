@@ -16,6 +16,6 @@ extra-source-files:  README.md
 executable my-project
   hs-source-dirs:      src
   main-is:             Main.hs
-  other-modules:       MachMit, Spickzettel, Map
+  other-modules:       MachMit_women_in_tech, Spickzettel_women_in_tech, MachMit, Spickzettel, Map
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5
