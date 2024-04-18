@@ -1,6 +1,8 @@
+
+
+{-# LANGUAGE KindSignatures #-}
 {-
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
 -}
@@ -23,6 +25,7 @@ import Prelude hiding (Foldable, Functor, Semigroup, Monoid)
 
 -- Funktionen
 -- Zahl verdoppeln
+
 
 -- Zwei Zahlen addieren
 
@@ -157,10 +160,10 @@ list12 = reverse [1, 2, 3, 4, 5] -- [5, 4, 3, 2, 1], drehe die Reihenfolge der E
 
 -- Wechselnde Rekursion:
 -- Funktion, die alle Elemente an geraden Stellen aus einer Liste nimmt:
--- also sowas: evens "abcde" = ...
+-- also sowas: evens "abcde" = "ace"
 
 -- Funktion, die alle Elemente an ungeraden Stellen aus einer Liste nimmt:
--- also sowas: odds "bcde" = ...
+-- also sowas: odds "bcde" = "ce"
 
 -- Funktionen höherer Ordnung auf Listen:
 
@@ -184,7 +187,7 @@ list12 = reverse [1, 2, 3, 4, 5] -- [5, 4, 3, 2, 1], drehe die Reihenfolge der E
 
 -- Eine Liste von Funktionen a -> a verketten
 
-{-
+
 -- Funktoren, Foldables
 
 -- Optional, manchmal da, manchmal nicht:
@@ -220,16 +223,6 @@ class Functor (constructor :: * -> *) where
     -- mmap identity_a = identity_constructor a
     -- mmap (f . g) = (mmap f) . (mmap g)
 
--- Erläuterungen:
--- identity_a :: a -> a ist die Identität auf a und entsprechend hat man mmap identity_a :: constructor a -> constructor a.
--- Die erste Funktoreigenschaft besagt, dass mmap identity_a der Identität auf constructor a,
--- also identity_constructor a :: constructor a -> constructor a entsprechen muss.
-
--- Für g :: a -> b und f :: b -> c hat man f . g :: a -> c und entsprechend mmap (f . g) :: constructor a -> constructor c.
--- Auf der anderen seite hat man mmap g :: constructor a -> constructor b und mmap f :: constructor b -> constructor c
--- und entsprechend (mmap f . mmap g) :: constructor a -> constructor c.
--- Die zweite Funktoreigenschaft besagt, dass die Abbildung mmap (f . g) der Abbildung (mmap f . mmap g) entsprechend muss.
-
 -- Der Typkonstruktor [] ist mit der Abbildung listMap ein Funktor
 --instance Functor [] where
     --mmap = listMap
@@ -253,7 +246,7 @@ optionalFoldr f v (There a) = f a v
 -- Der Typkonstruktor Optional ist mit der Abbildung optionalFoldr ein Foldable
 instance Foldable Optional where
     myfoldr = optionalFoldr
--}
+
 
 
 
